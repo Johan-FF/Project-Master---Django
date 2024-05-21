@@ -4,9 +4,8 @@ from role.models import Role
 class Employee(models.Model):
     name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    ID = models.BigIntegerField(unique=True)
-    # Role would be here, but we need to set them.
+    email = models.EmailField()
+    role = models.ForeignKey(Role, on_delete= models.CASCADE)
 
     def _str_(self):
         return self.name
