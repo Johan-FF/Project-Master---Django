@@ -1,12 +1,12 @@
 from django.db import models
 
 class Role(models.Model):
-    name = models.CharField(max_length=50)
+    role_name = models.CharField(max_length=50)
     description = models.TextField()
-    roles = models.CharField(max_length=50, choices=[
-        ('pendiente', 'Pendiente'),
-        ('en_progreso', 'En Progreso'),
-        ('completada', 'Completada'),
+    permissions = models.CharField(max_length=50, choices=[
+        ('Admin', 'Administrar roles y usuarios'),
+        ('Coordinador', 'Administrar roles, proyectos y tareas'),
+        ('Empleado', 'Interactuar con la aplicacion'),
     ]) 
 
     def __str__(self):

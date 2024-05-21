@@ -1,10 +1,12 @@
 from django.db import models
 from employee.models import Employee
+from task.models import Task
 
 class Project(models.Model):
-    name = models.CharField(max_length=80)
+    project_name = models.CharField(max_length=80)
     description = models.TextField()
-    participants = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    participants = models.ManyToManyField(Employee)
+    tasks = models.ManyToManyField(Task)
 
     def __str__(self):
         return self.name

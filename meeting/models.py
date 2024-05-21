@@ -2,11 +2,11 @@ from django.db import models
 from employee.models import Employee
 
 class Meeting(models.Model):
-    name = models.CharField(max_length=80)
-    time = models.TimeField()
+    subject = models.CharField(max_length=80)
+    meetTime = models.TimeField()
     place = models.CharField(max_length=200)
     description = models.TextField()
-    participants = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    participants = models.ManyToManyField(Employee)
 
 
     def __str__(self):

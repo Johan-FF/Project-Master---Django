@@ -2,10 +2,11 @@ from django.db import models
 from employee.models import Employee
 
 class Task(models.Model):
-    name = models.CharField(max_length=200)
-    Comments = models.TextField()
+    task_name = models.CharField(max_length=200)
+    comments = models.TextField()
     delivery_date = models.DateField()
-    empleado_asignado = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='tareas_asignadas')
+    tied_project = models.ForeignKey('project.Project', on_delete=models.CASCADE)
+    associated_employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     state = models.CharField(max_length=50, choices=[
         ('pendiente', 'Pendiente'),
         ('en_progreso', 'En Progreso'),
