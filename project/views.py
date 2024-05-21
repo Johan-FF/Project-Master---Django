@@ -11,24 +11,34 @@ def create(request):
         try:
             data = json.loads(request.body)
 
-            employee = Employee.objects.get(name = data['name'])
-            task = Task.objects.get(task_name = data['task_name'])
-
             project_data = {
-                'project_name': data['project_name'],
-                'description': data['description'],
-                'participants': employee,
-                'tasks': task
+                'project_name': data['projectName'],
+                'description': data['description']
             }
 
             project = Project.objects.create(**project_data)
+            employees = Employee.objects.filter(id__in=data['employees'])
+            project.participants.add(*employees)
+
+            employees_response = []
+            for empl in employees:
+              employee_data = {
+                'id': empl.id,
+                'name': empl.name,
+                'lastName': empl.last_name,
+                'email': empl.email,
+                'identification': empl.identification,
+                'role': empl.role.role_name,
+                'organization': empl.organization.company_name
+              }
+              employees_response.append(employee_data) 
 
             response_data = {
                 'project_id': project.id,
-                'project_name': project.project_name,
+                'projectName': project.project_name,
                 'description': project.description,
-                'participants': employee.name,
-                'tasks': task.task_name
+                'participants': employees_response,
+                'tasks': []
             }
             return JsonResponse(response_data, status=201)
   
@@ -45,7 +55,7 @@ def update(request, id):
             data = json.loads(request.body)
             project = Project.objects.get(id=id)
 
-            project.project_name = data['project_name']
+            project.project_name = data['projectName']
             project.description = data['description']
 
             project.save()
@@ -64,11 +74,25 @@ def delete(request, id):
   if request.method == 'DELETE':
     try:
       project = Project.objects.get(id=id)
+
+      employees_response = []
+      for empl in project.participants.values():
+        employee_data = {
+          'id': empl["id"],
+          'name': empl["name"],
+          'lastName': empl["last_name"],
+          'email': empl["email"],
+          'identification': empl["identification"],
+          'role': empl["role_id"],
+          'organization': empl["organization_id"]
+        }
+        employees_response.append(employee_data)
+
       project_data = {
         'id': project.id,
-        'project_name': project.project_name,
+        'projectName': project.project_name,
         'description': project.description,
-        'participants': project.participants.name
+        'participants': employees_response
       }
       project.delete()
 
@@ -86,11 +110,24 @@ def list(request):
     project_list = []
 
     for org in projects:
+      employees_response = []
+      for empl in org.participants.values():
+        employee_data = {
+          'id': empl["id"],
+          'name': empl["name"],
+          'lastName': empl["last_name"],
+          'email': empl["email"],
+          'identification': empl["identification"],
+          'role': empl["role_id"],
+          'organization': empl["organization_id"]
+        }
+        employees_response.append(employee_data)
+
       project_list.append({
         'id': org.id,
-        'project_name': org.project_name,
+        'projectName': org.project_name,
         'description': org.description,
-        'participants': org.participants.name
+        'participants': employees_response
       })
 
     return JsonResponse(project_list, safe=False, status=200)

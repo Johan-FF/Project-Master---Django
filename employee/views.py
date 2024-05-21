@@ -11,13 +11,14 @@ def create(request):
         try:
             data = json.loads(request.body)
 
-            role = Role.objects.get(role_name = data['role_name'])
-            organization = Organization.objects.get(company_name = data['company_name'])
+            role = Role.objects.get(id = data['roleId'])
+            organization = Organization.objects.get(id = data['companyId'])
 
             employee_data = {
                 'name': data['name'],
-                'last_name': data['last_name'],
+                'last_name': data['lastName'],
                 'email': data['email'],
+                'identification': data['identification'],
                 'role': role,
                 'organization': organization
             }
@@ -27,10 +28,11 @@ def create(request):
             response_data = {
                 'id': employee.id,
                 'name': employee.name,
-                'last_name': employee.last_name,
+                'lastName': employee.last_name,
                 'email': employee.email,
-                'role_name': role.role_name,
-                'company_name': organization.company_name
+                'identification': employee.identification,
+                'roleName': role.role_name,
+                'companyName': organization.company_name
             }
             return JsonResponse(response_data, status=201)
   
@@ -49,8 +51,9 @@ def update(request, id):
       employee = Employee.objects.get(id=id)
 
       employee.name = data['name']
-      employee.last_name = data['last_name']
+      employee.last_name = data['lastName']
       employee.email = data['email']
+      employee.identification = data['identification']
 
       employee.save()
 
@@ -71,8 +74,9 @@ def delete(request, id):
       employee_data = {
         'id': employee.id,
         'name': employee.name,
-        'last_name': employee.last_name,
+        'lastName': employee.last_name,
         'email': employee.email,
+        'identification': employee.identification,
         'role': employee.role.role_name,
         'organization': employee.organization.company_name
       }
@@ -95,8 +99,9 @@ def list(request):
       employee_list.append({
         'id': org.id,
         'name': org.name,
-        'last_name': org.last_name,
+        'lastName': org.last_name,
         'email': org.email,
+        'identification': org.identification,
         'role': org.role.role_name,
         'organization': org.organization.company_name
       })

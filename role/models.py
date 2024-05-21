@@ -7,7 +7,4 @@ class Role(models.Model):
         ('Admin', 'Administrar roles y usuarios'),
         ('Coordinador', 'Administrar roles, proyectos y tareas'),
         ('Empleado', 'Interactuar con la aplicacion'),
-    ]) 
-
-    def __str__(self):
-        return self.nombre
+    ])

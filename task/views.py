@@ -11,13 +11,13 @@ def create(request):
         try:
             data = json.loads(request.body)
 
-            project = Project.objects.get(project_name = data['project_name'])
-            employee = Employee.objects.get(name = data['name'])
+            project = Project.objects.get(id = data['projectId'])
+            employee = Employee.objects.get(id = data['employeeId'])
 
             task_data = {
-                'task_name': data['task_name'],
+                'task_name': data['taskName'],
                 'comments': data['comments'],
-                'delivery_date': data['delivery_date'],
+                'delivery_date': data['deliveryDate'],
                 'state': data['state'],
                 'tied_project': project,
                 'associated_employee': employee
@@ -27,12 +27,12 @@ def create(request):
 
             response_data = {
                 'id': task.id,
-                'task_name': task.task_name,
+                'taskName': task.task_name,
                 'comments': task.comments,
-                'delivery_date': task.delivery_date,
+                'deliveryDate': task.delivery_date,
                 'state': task.state,
-                'tied_project': project.project_name,
-                'associated_employee': employee.name
+                'tiedProject': project.project_name,
+                'associatedEmployee': employee.name
             }
             return JsonResponse(response_data, status=201)
   
@@ -50,9 +50,9 @@ def update(request, id):
       data = json.loads(request.body)
       task = Task.objects.get(id=id)
 
-      task.task_name = data['task_name']
+      task.task_name = data['taskName']
       task.comments = data['comments']
-      task.delivery_date = data['delivery_date']
+      task.delivery_date = data['deliveryDate']
       task.state = data['state']
 
       task.save()
@@ -73,12 +73,12 @@ def delete(request, id):
       task = Task.objects.get(id=id)
       task_data = {
         'id': task.id,
-        'task_name': task.task_name,
+        'taskName': task.task_name,
         'comments': task.comments,
-        'delivery_date': task.delivery_date,
+        'deliveryDate': task.delivery_date,
         'state': task.state,
-        'tied_project': task.tied_project.project_name,
-        'associated_employee': task.associated_employee.name
+        'tiedProject': task.tied_project.project_name,
+        'associatedEmployee': task.associated_employee.name
       }
       task.delete()
 
@@ -98,12 +98,12 @@ def list(request):
     for org in tasks:
       task_list.append({
         'id': org.id,
-        'task_name': org.task_name,
+        'taskName': org.task_name,
         'comments': org.comments,
-        'delivery_date': org.delivery_date,
+        'deliveryDate': org.delivery_date,
         'state': org._state,
-        'tied_project': org.tied_project.project_name,
-        'associated_employee': org.associated_employee.name
+        'tiedProject': org.tied_project.project_name,
+        'associatedEmployee': org.associated_employee.name
       })
 
     return JsonResponse(task_list, safe=False, status=200)

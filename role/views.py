@@ -10,7 +10,7 @@ def create(request):
             data = json.loads(request.body)
 
             role_data = {
-                'role_name': data['role_name'],
+                'role_name': data['roleName'],
                 'description': data['description'],
                 'permissions': data['permissions']
             }
@@ -19,7 +19,7 @@ def create(request):
 
             response_data = {
                 'id': role.id,
-                'role_name': role.role_name,
+                'roleName': role.role_name,
                 'description': role.description,
                 'permissions': role.permissions
             }
@@ -39,7 +39,7 @@ def update(request, id):
             data = json.loads(request.body)
             role = Role.objects.get(id=id)
 
-            role.role_name = data['role_name']
+            role.role_name = data['roleName']
             role.description = data['description']
             role.permissions = data['permissions']
 
@@ -61,7 +61,7 @@ def delete(request, id):
       role = Role.objects.get(id=id)
       role_data = {
         'id': role.id,
-        'role_name': role.role_name,
+        'roleName': role.role_name,
         'description': role.description,
         'permissions': role.permissions
       }
@@ -83,7 +83,7 @@ def list(request):
     for org in roles:
       role_list.append({
         'id': org.id,
-        'role_name': org.role_name,
+        'roleName': org.role_name,
         'description': org.description,
         'participants': org.permissions
       })

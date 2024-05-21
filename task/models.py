@@ -8,10 +8,7 @@ class Task(models.Model):
     tied_project = models.ForeignKey('project.Project', on_delete=models.CASCADE)
     associated_employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     state = models.CharField(max_length=50, choices=[
-        ('pendiente', 'Pendiente'),
-        ('en_progreso', 'En Progreso'),
-        ('completada', 'Completada'),
+        ('Pendiente', 'pendiente'),
+        ('En Progreso', 'en_progreso'),
+        ('Completada', 'completada'),
     ])
-
-    def __str__(self):
-        return self.name
