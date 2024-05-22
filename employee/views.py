@@ -110,3 +110,28 @@ def list(request):
     return JsonResponse(employee_list, safe=False, status=200)
 
   return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def by_organization(request, id):
+  if request.method == 'GET':
+
+    organization = Organization.objects.get(id = id)
+    employees = Employee.objects.filter(member_organization = organization)
+ 
+    employee_list = []
+
+    for empl in employees:
+      employee_list.append({
+        'id': empl.id,
+        'name': empl.name,
+        'lastName': empl.last_name,
+        'email': empl.email,
+        'identification': empl.identification,
+        'password': empl.password,
+        'role': empl.role.role_name,
+        'member_organization': empl.member_organization.company_name
+      })
+
+    return JsonResponse(employee_list, safe=False, status=200)
+
+  return JsonResponse({'error': 'Invalid request method'}, status=405)

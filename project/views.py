@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from .models import Project
+from organization.models import Organization
 from employee.models import Employee
 from task.models import Task
 import json
@@ -11,9 +12,12 @@ def create(request):
         try:
             data = json.loads(request.body)
 
+            organization = Organization.objects.get(id=data['idOrganization'])
+
             project_data = {
               'project_name': data['projectName'],
-              'description': data['description']
+              'description': data['description'],
+              'project_organization': organization
             }
 
             project = Project.objects.create(**project_data)
@@ -38,6 +42,7 @@ def create(request):
                 'projectName': project.project_name,
                 'description': project.description,
                 'participants': employees_response,
+                'prject_organization': project.project_organization.company_name,
                 'tasks': []
             }
             return JsonResponse(response_data, status=201)
@@ -92,7 +97,8 @@ def delete(request, id):
         'id': project.id,
         'projectName': project.project_name,
         'description': project.description,
-        'participants': employees_response
+        'participants': employees_response,
+        'projecOrganization': project.project_organization.id
       }
       project.delete()
 
@@ -127,7 +133,28 @@ def list(request):
         'id': org.id,
         'projectName': org.project_name,
         'description': org.description,
-        'participants': employees_response
+        'participants': employees_response,
+        'projectOrganization': org.project_organization.company_name
+      })
+
+    return JsonResponse(project_list, safe=False, status=200)
+
+  return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def by_organization(request, id):
+  if request.method == 'GET':
+
+    organization = Organization.objects.get(id = id)
+    projects = Project.objects.filter(project_organization = organization)
+ 
+    project_list = []
+
+    for proj in projects:
+      project_list.append({
+        'id': proj.id,
+        'projectName': proj.project_name,
+        'description': proj.description,
+        'projectOrganization': proj.project_organization.company_name
       })
 
     return JsonResponse(project_list, safe=False, status=200)
