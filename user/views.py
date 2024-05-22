@@ -15,12 +15,12 @@ def login(request):
 
             if employee.password == data['password']:
               response_data = {
-                  'id': employee.id,
-                  'name': employee.name,
-                  'lastName': employee.last_name,
-                  'role': employee.role.role_name,
-                  'generalRole': employee.role.permissions,
-                  'organizationId': employee.member_organization.id
+                'id': employee.id,
+                'name': employee.name,
+                'lastName': employee.last_name,
+                'generalRole': employee.role.permissions,
+                'role': employee.role.role_name,
+                'organizationId': employee.member_organization.id
               }
               return JsonResponse(response_data, status=200)
             else:

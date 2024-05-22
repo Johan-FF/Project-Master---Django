@@ -1,5 +1,6 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from organization.models import Organization
 from .models import Role
 import json
 
@@ -9,10 +10,13 @@ def create(request):
         try:
             data = json.loads(request.body)
 
+            organization = Organization.objects.get(id=data['idOrganization'])
+
             role_data = {
                 'role_name': data['roleName'],
                 'description': data['description'],
-                'permissions': data['permissions']
+                'permissions': data['permissions'],
+                'role_organization': organization,
             }
 
             role = Role.objects.create(**role_data)
@@ -63,7 +67,8 @@ def delete(request, id):
         'id': role.id,
         'roleName': role.role_name,
         'description': role.description,
-        'permissions': role.permissions
+        'permissions': role.permissions,
+        'idOrganization': role.role_organization.id
       }
       role.delete()
 
@@ -80,12 +85,33 @@ def list(request):
     roles = Role.objects.all()
     role_list = []
 
+    for role in roles:
+      role_list.append({
+        'id': role.id,
+        'roleName': role.role_name,
+        'description': role.description,
+        'permissions': role.permissions,
+        'idOrganization': role.role_organization.id
+      })
+
+    return JsonResponse(role_list, safe=False, status=200)
+
+  return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def by_organization(request, id):
+  if request.method == 'GET':
+
+    organization = Organization.objects.get(id = id)
+    roles = Role.objects.filter(role_organization = organization)
+ 
+    role_list = []
+
     for org in roles:
       role_list.append({
         'id': org.id,
         'roleName': org.role_name,
         'description': org.description,
-        'participants': org.permissions
+        'permissions': org.permissions
       })
 
     return JsonResponse(role_list, safe=False, status=200)

@@ -116,7 +116,7 @@ def list(request):
         'postalCode': org.postal_code,
         'country': org.country,
         'companyPhone': org.phone,
-        'contactName': org.admin.name
+        # 'contactName': org.admin.name
       })
 
     return JsonResponse(organization_list, safe=False, status=200)
