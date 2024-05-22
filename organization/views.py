@@ -1,19 +1,15 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from .models import Organization, ContactOrganization
+from .models import Organization
+from employee.models import Employee
+from role.models import Role
 import json
 
 @csrf_exempt
-def create(request):
+def register(request):
   if request.method == 'POST':
     try:
       data = json.loads(request.body)
-
-      contact_organization_data = {
-        'contact_name': data['contactName'],
-        'contact_phone': data['contactPhone']
-      }
-      contact_organization = ContactOrganization.objects.create(**contact_organization_data)
 
       organization_data = {
         'company_name': data['companyName'],
@@ -23,26 +19,26 @@ def create(request):
         'city': data['city'],
         'country': data['country'],
         'postal_code': data['postalCode'],
-        'phone': data['companyPhone'],
-        'id_contact': contact_organization
+        'phone': data['companyPhone']
       }
       organization = Organization.objects.create(**organization_data)
 
-      response_data = {
-        'id': organization.id,
-        'companyName': organization.company_name,
-        'industry': organization.industry,
-        'employeeCount': organization.employees_number,
-        'address': organization.address,
-        'city': organization.city,
-        'postalCode': organization.postal_code,
-        'country': organization.country,
-        'companyPhone': organization.phone,
-        'contactName': contact_organization.contact_name,
-        'contactPhone': contact_organization.contact_phone
+      role = Role.objects.get(id = 1)
+
+      employee_data = {
+          'name': data['name'],
+          'last_name': data['lastName'],
+          'email': data['email'],
+          'identification': data['identification'],
+          'password': data['password'],
+          'role': role,
+          'organization': organization
       }
-      return JsonResponse(response_data, status=201)
-  
+      employee = Employee.objects.create(**employee_data)
+
+      organization.id_contact = employee
+
+      return JsonResponse({"message": "success"}, status=201)  
     except KeyError as e:
       return JsonResponse({'error': f'Missing key: {e.args[0]}'}, status=400)
     except Exception as e:
@@ -120,8 +116,7 @@ def list(request):
         'postalCode': org.postal_code,
         'country': org.country,
         'companyPhone': org.phone,
-        'contactName': org.id_contact.contact_name,
-        'contactPhone': org.id_contact.contact_phone
+        # 'contactName': (org.admin.name if org.admin else org.id_contect.contact_name),
       })
 
     return JsonResponse(organization_list, safe=False, status=200)

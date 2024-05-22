@@ -19,8 +19,9 @@ def create(request):
                 'last_name': data['lastName'],
                 'email': data['email'],
                 'identification': data['identification'],
+                'password': data['password'],
                 'role': role,
-                'organization': organization
+                'member_organization': organization
             }
 
             employee = Employee.objects.create(**employee_data)
@@ -78,7 +79,7 @@ def delete(request, id):
         'email': employee.email,
         'identification': employee.identification,
         'role': employee.role.role_name,
-        'organization': employee.organization.company_name
+        'organization': employee.member_organization.company_name
       }
       employee.delete()
 
@@ -103,7 +104,7 @@ def list(request):
         'email': org.email,
         'identification': org.identification,
         'role': org.role.role_name,
-        'organization': org.organization.company_name
+        'organization': org.member_organization.company_name
       })
 
     return JsonResponse(employee_list, safe=False, status=200)

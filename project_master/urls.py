@@ -24,5 +24,6 @@ urlpatterns = [
     path('meeting/', include("meeting.urls")),
     path('project/', include("project.urls")),
     path('role/', include("role.urls")),
-    path('task/', include("task.urls"))
+    path('task/', include("task.urls")),
+    path('user/', include("user.urls"))
 ]
