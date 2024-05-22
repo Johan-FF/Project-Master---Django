@@ -32,11 +32,12 @@ def register(request):
           'identification': data['identification'],
           'password': data['password'],
           'role': role,
-          'organization': organization
+          'member_organization': organization
       }
       employee = Employee.objects.create(**employee_data)
 
       organization.admin = employee
+      organization.save()
 
       return JsonResponse({"message": "success"}, status=201)  
     except KeyError as e:

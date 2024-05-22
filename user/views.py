@@ -20,15 +20,17 @@ def login(request):
                   'lastName': employee.last_name,
                   'role': employee.role.role_name,
                   'generalRole': employee.role.permissions,
-                  'organizationId': employee.organization.id
+                  'organizationId': employee.member_organization.id
               }
               return JsonResponse(response_data, status=200)
             else:
-              return JsonResponse({'error': str(e)}, status=400)
+              return JsonResponse({'error': "Password incorrect"}, status=400)
 
         except KeyError as e:
             return JsonResponse({'error': f'Missing key: {e.args[0]}'}, status=400)
         except Exception as e:
+            if str(e)=="Employee matching query does not exist.":
+               return JsonResponse({'error': "Email incorrect"}, status=400)
             return JsonResponse({'error': str(e)}, status=400)
     
     return JsonResponse({'error': 'Invalid request method'}, status=405)
