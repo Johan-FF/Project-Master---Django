@@ -19,6 +19,7 @@ def create(request):
             }
 
             meeting = Meeting.objects.create(**meeting_data)
+
             employees = Employee.objects.filter(id__in=data['employees'])
             meeting.participants.add(*employees)
 
@@ -132,11 +133,11 @@ def list(request):
         employees_response.append(employee_data)
 
       meeting_list.append({
-        'id': org.id,
-        'subject': org.subject,
-        'meetTime': org.meet_time,
-        'place': org.place,
-        'description': org.description,
+        'id': meet.id,
+        'subject': meet.subject,
+        'meetTime': meet.meet_time,
+        'place': meet.place,
+        'description': meet.description,
         'participants': employees_response
       })
 

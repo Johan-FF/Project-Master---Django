@@ -6,3 +6,4 @@ class Project(models.Model):
     project_name = models.CharField(max_length=80)
     description = models.TextField()
     participants = models.ManyToManyField(Employee)
+    tasks = models.ManyToManyField(Task)

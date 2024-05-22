@@ -36,7 +36,7 @@ def register(request):
       }
       employee = Employee.objects.create(**employee_data)
 
-      organization.id_contact = employee
+      organization.admin = employee
 
       return JsonResponse({"message": "success"}, status=201)  
     except KeyError as e:
@@ -87,8 +87,7 @@ def delete(request, id):
         'postalCode': organization.country,
         'country': organization.postal_code,
         'companyPhone': organization.phone,
-        'contactName': organization.id_contact.contact_name,
-        'contactPhone': organization.id_contact.contact_phone
+        'admin': organization.admin.name
       }
       organization.delete()
 
@@ -116,7 +115,7 @@ def list(request):
         'postalCode': org.postal_code,
         'country': org.country,
         'companyPhone': org.phone,
-        # 'contactName': (org.admin.name if org.admin else org.id_contect.contact_name),
+        'contactName': org.admin.name
       })
 
     return JsonResponse(organization_list, safe=False, status=200)

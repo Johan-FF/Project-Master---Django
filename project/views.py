@@ -12,8 +12,8 @@ def create(request):
             data = json.loads(request.body)
 
             project_data = {
-                'project_name': data['projectName'],
-                'description': data['description']
+              'project_name': data['projectName'],
+              'description': data['description']
             }
 
             project = Project.objects.create(**project_data)
@@ -29,7 +29,7 @@ def create(request):
                 'email': empl.email,
                 'identification': empl.identification,
                 'role': empl.role.role_name,
-                'organization': empl.organization.company_name
+                'organization': empl.member_organization.company_name
               }
               employees_response.append(employee_data) 
 
